@@ -1,5 +1,6 @@
 //      npm init -y
 //      npm install express
+//      npm i nodemon
 //      node ./index.js
 
 
