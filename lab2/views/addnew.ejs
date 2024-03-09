@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <main>
+      <form class="product-form" action="/addnew" method="POST" enctype="multipart/form-data">
+        <div class="form-control">
+          <label for="title">Tên sản phẩm</label>
+          <input type="text" name="productName" id="productName" />
+        </div>
+        <div class="form-control">
+          <label for="title">Ảnh sản phẩm</label>
+          <input
+            type="file"
+            name="productImage"
+            id="productImage"
+            accept="image/*"
+          />
+        </div>
+        <button type="submit">Thêm sản phẩm</button>
+      </form>
+    </main>
+  </body>
+</html>
