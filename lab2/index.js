@@ -1,56 +1,122 @@
 // npm i ejs
 
-// const { fileLoader } = require("ejs");
 const express = require("express");
+
+var multer = require("multer");
+//khai báo sử dụng multer
+// SET STORAGE
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./public/images");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+var upload = multer({ storage: storage });
+
+//
 const app = express();
 const port = 3000;
-// Sử dụng express.urlencoded() để xử lý các yêu cầu POST
+
 app.use(express.urlencoded({ extended: true }));
 
-// // images
-// var storage = multer.diskStorage({
-//   destination: function (res, file, cb) {
-//     cb(null, "./public/images");
-//   },
-//   filename: function (req, file, cb) {
-//     cb("null", `${Date.now()}-${file.originalname} }`);
-//   },
-// });
-// var upload = multer({storage:storage});
-
-// //Upload images
-// var storage = multer.diskStorage({
-//   destination: function (res, file, cb) {
-//     cb(null, "./public/uploads");
-//   },
-//   filename: function (req, file, cb) {
-//     cb(null, Date.now() + "-" + file.originalname);
-//   },
-// });
-// function checkFileupload(req, file, cb) {
-//   if (!file.originalname.match(/\.(jpg|png|gif|jpeg)$/)) {
-//     cb(new Error("Ban chi duoc upload file anh !"));
-//   } else {
-//     cb(null, true);
-//   }
-// }
-// var upload = multer({ storage: storage, fileFilter: checkFileupload });
-//khai bao sử dụng template ejs
 app.set("view engine", "ejs");
 app.set("views", "./views");
-
-/////
 app.use(express.static("public"));
+// data
+var listProduct = [
+  {
+    id: 1,
+    title: "Apple Book",
+    price: 3000,
+    description:
+      "A very interesting book about so many even more interesting things!",
+    imageURL: "anh1.jpg",
+  },
+  {
+    id: 2,
+    title: "Microsoft Book",
+    price: 2000,
+    description:
+      "A very interesting book about so many even more interesting things!",
+    imageURL: "anh2.jpg",
+  },
+  {
+    id: 3,
+    title: "VFast Book",
+    price: 1000,
+    description:
+      "A very interesting book about so many even more interesting things!",
+    imageURL: "anh3.jpg",
+  },
+];
+
+//router
 app.get("/", (req, res) => {
-  res.render(`home`, { products: [] });
+  var today = new Date();
+  currentDay = today.getDay();
+  var day = "";
+  switch (currentDay) {
+    case 0:
+      day = "Chủ nhật";
+      break;
+    case 1:
+      day = "Thứ hai";
+      break;
+    case 2:
+      day = "Thứ ba";
+      break;
+    case 3:
+      day = "Thứ tư";
+      break;
+    case 4:
+      day = "Thứ năm";
+      break;
+    case 5:
+      day = "Thứ sáu";
+      break;
+    case 6:
+      day = "Thứ bảy";
+      break;
+    default:
+      console.log(`Error: ${currentDay}`);
+  }
+  res.render("home", { kindOfDay: day, products: listProduct });
 });
 
-app.post("/addnew", (req, res) => {
-  let productName = req.body.productName; // Lấy tên sản phẩm từ dữ liệu gửi lên
-  let productImage = req.file.productImage; // Lấy đường dẫn ảnh sản phẩm từ dữ liệu gửi lên
-  listProducts.push({ productName: productName, productImage: productImage }); // Thêm sản phẩm mới vào danh sách
-  res.redirect(`/home`); // Chuyển hướng người dùng đến trang /home sau khi thêm sản phẩm
+app.get("/shop", (req, res) => {
+  res.render("shop", { products: listProduct });
 });
+app.get("/detail/:spID", (req, res) => {
+  var thutu = req.params.spID;
+  var sp = listProduct[thutu];
+  res.render("detail", { thutu: thutu, sp: sp });
+});
+
+// Route để thêm mới sản phẩm
+app.get("/addnew",(req,res)=>{
+  res.render("addnew");
+  })
+
+  app.post('/addnew', upload.single('productImage'),(req, res) => {
+    //lấy dữ liệu từ form sau khi upload anh
+    const file = req.file
+    let title=req.body.productName;
+    let price=req.body.price;
+    let description=req.body.description;
+    let nameImage=file.filename;
+    //Thêm vào mảng json 1 cuối sách mới
+    listProduct.push({
+      id: listProduct.length + 1,
+    title:title,
+    price:price,
+    description:description,
+    imageURL:nameImage,
+    })
+    //chuyển về trang sản phẩm
+    res.redirect('/shop');
+    });
 
 ///////////
 app.listen(port, () => {

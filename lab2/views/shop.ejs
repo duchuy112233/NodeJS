@@ -6,7 +6,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Document</title>
   </head>
-  <body class="bg-gray-100">
+  <body>
     <header class="bg-white">
       <div class="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
@@ -104,30 +104,34 @@
       </div>
     </header>
     <hr />
-
-    <div class="max-w-md mx-auto mt-8">
-      <form action="/addnew" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <div class="mb-4">
-          <label for="productName" class="block text-gray-700 text-sm font-bold mb-2">Tên sản phẩm</label>
-          <input type="text" name="productName" id="productName" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        </div>
-        <div class="mb-4">
-          <label for="productImage" class="block text-gray-700 text-sm font-bold mb-2">Ảnh sản phẩm</label>
-          <input type="file" name="productImage" id="productImage" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        </div>
-        <div class="mb-4">
-          <label for="price" class="block text-gray-700 text-sm font-bold mb-2">Giá</label>
-          <input type="text" name="price" id="price" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        </div>
-        <div class="mb-6">
-          <label for="description" class="block text-gray-700 text-sm font-bold mb-2">Mô tả</label>
-          <textarea name="description" id="description" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
-        </div>
-        <div class="flex items-center justify-between">
-          <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Thêm sản phẩm</button>
-        </div>
-      </form>
-    </div>
-    
-    </body>
+    <main class="container mx-auto mt-8">
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <% for (let [index, product] of products.entries()) { %>
+        <article class="bg-white shadow-md rounded-lg overflow-hidden">
+          <div class="px-6 py-4">
+            <h1 class="font-bold text-xl mb-2"><%= product.title %></h1>
+            <div class="mb-4">
+              <a href="/detail/<%= index %>">
+                <img
+                  src="images/<%= product.imageURL %>"
+                  alt="<%= product.title %>"
+                  class="w-full h-auto"
+                />
+              </a>
+            </div>
+            <p class="text-gray-700 text-base"><%= product.description %></p>
+          </div>
+          <div class="px-6 pt-4 pb-2">
+            <p class="text-gray-700 font-bold text-xl">$<%= product.price %></p>
+            <button
+              class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mt-4"
+            >
+              Add to Cart
+            </button>
+          </div>
+        </article>
+        <% } %>
+      </div>
+    </main>
+  </body>
 </html>
