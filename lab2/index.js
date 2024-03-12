@@ -82,7 +82,7 @@ app.get("/", (req, res) => {
     default:
       console.log(`Error: ${currentDay}`);
   }
-  res.render("home", { kindOfDay: day, products: listProduct });
+  res.render("home", { kindOfDay: day, products: listProduct }); 
 });
 
 app.get("/shop", (req, res) => {
