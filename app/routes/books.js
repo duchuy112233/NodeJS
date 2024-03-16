@@ -1,19 +1,17 @@
 import express from "express";
 const booksRouter = express.Router();
 
-booksRouter.get("/", (req, res) => {
-  res.send("Get All Books");
-});
-booksRouter.post("/", (req, res) => {
-  res.send("Add new Book");
-});
-booksRouter.get("/:id", (req, res) => {
-  res.send("Book ID Detail");
-});
-booksRouter.put("/:id", (req, res) => {
-  res.send("Update Book");
-});
-booksRouter.delete("/:id", (req, res) => {
-  res.send("Delete Book");
-});
+import BooksController from "../controllers/books.js";
+
+
+const booksController = new BooksController();
+
+booksRouter.get("/", booksController.getAllBooks);
+booksRouter.post("/", booksController.createBook);
+
+booksRouter.get("/:id", booksController.getBookDetail);
+booksRouter.put("/:id", booksController.updateBook);
+
+booksRouter.delete("/:id", booksController.deleteBooks);
+
 export default booksRouter;
