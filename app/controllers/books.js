@@ -16,28 +16,70 @@ class BooksController {
     }
   }
 
-  // post /book
-  createBook(req, res) {
-    // Model.create({data})
-    Book.create({
-      title: "Book 2",
-      description: "description 2",
-      author: "author ",
-      image: "image 2",
-      price: 1,
-      rate: 2,
-    });
-
-    res.send("Create Books");
+  // POST /books
+  async createBook(req, res) {
+    console.log(req.body);
+    try {
+      const book = await Book.create(req.body);
+      res.status(200).json({
+        message: "Create Book Done",
+        data: book,
+      });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
   }
 
-  // get /book/:id
-  getBookDetail(req, res) {
-    res.send("Books detail");
+  // createBook(req, res) {
+  //   // Model.create({data})
+  //   Book.create({
+  //     title: "Book 2",
+  //     description: "description 2",
+  //     author: "author ",
+  //     image: "image 2",
+  //     price: 1,
+  //     rate: 2,
+  //   });
+
+  //   res.send("Create Books");
+  // }
+
+  // GET /books/:id
+  async getBookDetail(req, res) {
+    try {
+      const book = await Book.findById(req.params.id);
+      if (!book) {
+        return res.status(404).json({
+          message: " Book Not Found",
+        });
+      }
+      res.status(200).json({
+        message: "Get Book Detail Done",
+        data: book,
+      });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
   }
-  // put /book/:id
-  updateBook(req, res) {
-    res.send("update Books");
+
+  // PUT /books/:id
+  async updateBook(req, res) {
+    try {
+      const book = await Book.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+      });
+      if (!book) {
+        return res.status(404).json({
+          message: " Book Not Found",
+        });
+      }
+      res.status(200).json({
+        message: "Update Book Done",
+        data: book,
+      });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
   }
 
   // delete /book/:id
