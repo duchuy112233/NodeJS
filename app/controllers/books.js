@@ -33,16 +33,16 @@ class BooksController {
   // createBook(req, res) {
   //   // Model.create({data})
   //   Book.create({
-  //     title: "Book 2",
-  //     description: "description 2",
-  //     author: "author ",
+  //     title: "Book 2345",
+  //     description: "description 34",
+  //     author: "author",
   //     image: "image 2",
   //     price: 1,
   //     rate: 2,
   //   });
-
-  //   res.send("Create Books");
+  //   res.send("Create Books Done");
   // }
+  //
 
   // GET /books/:id
   async getBookDetail(req, res) {
