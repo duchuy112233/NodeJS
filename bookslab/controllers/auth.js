@@ -16,21 +16,20 @@ class AuthController {
           message: errors,
         });
       }
-      // b2: validate email exitsing
+      // 2: validate email
       const emailExist = await User.findOne({ email });
       if (emailExist) {
         return res.status(400).json({ message: "Email đã được đăng ký" });
       }
-      // b3 ma hoa password
+      // 3 ma hoa password
       const hashPassword = await bcryptjs.hash(password, 10);
-      // update db
+      // update
       const user = await User.create({
         email,
         username,
-
         password: hashPassword,
       });
-      // b4 remove password in res
+      // 4
       res.status(200).json({
         message: "Create Done",
         data: { ...user.toObject(), password: undefined },
@@ -42,10 +41,8 @@ class AuthController {
     }
   }
 
-  // POST: auth/login: email, password
   async login(req, res) {
     const { email, password } = req.body;
-    //B1: validate: email, password
     const { error } = loginValidator.validate(req.body);
     if (error) {
       const errors = error.details.map((err) => err.message);
@@ -53,25 +50,21 @@ class AuthController {
         message: errors,
       });
     }
-    // check email xem co trong db
     const checkUser = await User.findOne({ email });
     if (!checkUser) {
       return res.status(404).json({
         message: "Tai khoan ko hop he",
       });
     }
-    // so sanh password: bcryptjs
     const checkPassword = await bcryptjs.compare(password, checkUser.password);
     if (!checkPassword) {
       return res.status(404).json({
         message: "Tài khoảng không hợp lệ",
       });
     }
-    // ma hoa token
     const token = jwt.sign({ id: checkUser._id }, "khoa-bi-mat", {
       expiresIn: "1d",
     });
-    // res
     res.status(200).json({
       message: "Login thành công",
       user: { ...checkUser.toObject(), password: undefined },

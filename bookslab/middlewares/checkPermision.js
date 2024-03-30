@@ -24,6 +24,7 @@ const checkPermission = async (req, res, next) => {
         message: "Bạn không đủ quyền truy cập",
       });
     }
+
     res.locals.id = user._id;
     next();
   } catch (error) {

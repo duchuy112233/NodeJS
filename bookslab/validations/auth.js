@@ -5,11 +5,10 @@ const registerValidator = Joi.object({
     "any.required": "Thiếu Username ",
     "string.min": "Username ít nhất 3 ký tự",
   }),
-  email: Joi.string().email().messages({
+  email: Joi.string().email().required().messages({
     "string.email": "Không đúng định dạng Email",
   }),
   password: Joi.string(),
-  avatar: Joi.string(),
   role: Joi.string(),
 }).options({
   abortEarly: false,
