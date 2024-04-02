@@ -1,16 +1,16 @@
-import express from "express";
-import LaptopsControllers from "../controllers/LaptopsController.js";
+import {Router} from "express";
+import LaptopsController from "../controllers/LaptopsController";
 
 
-const laptopRoutes = express.Router();
+const laptopRoutes = Router();
 //
-const laptopsControllers = new LaptopsControllers();
+const laptopsController = new LaptopsController();
 
-laptopRoutes.get("/", laptopsControllers.getAllLaptops);
-laptopRoutes.post("/", laptopsControllers.cretateLaptops);
+laptopRoutes.get("/", laptopsController.getAlllaptop);
+laptopRoutes.post("/", laptopsController.create);
 //
-laptopRoutes.get("/:id", laptopsControllers.DetailLaptops);
-laptopRoutes.put("/:id", laptopsControllers.UpdateLaptops);
-laptopRoutes.delete("/:id", laptopsControllers.DeleteLaptops);
+laptopRoutes.get("/:id", laptopsController.detail);
+laptopRoutes.put("/:id", laptopsController.update);
+laptopRoutes.delete("/:id", laptopsController.delete);
 
 export default laptopRoutes;
