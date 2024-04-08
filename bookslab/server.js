@@ -1,6 +1,7 @@
 import express from "express";
 import router from "./routes";
 import connectMongoDB from "./config/dbconfig";
+
 const app = express();
 app.use(
   express.urlencoded({

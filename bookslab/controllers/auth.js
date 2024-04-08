@@ -7,69 +7,67 @@ class AuthController {
   // POST auth/register
   async register(req, res) {
     try {
-      //B1: validate: email, password, username
-      const { email, username, password } = req.body;
-      const { error } = registerValidator.validate(req.body);
+      const { error } = registerValidator.validate(req.body, {
+        abortEarly: false,
+      });
       if (error) {
         const errors = error.details.map((err) => err.message);
         return res.status(400).json({
           message: errors,
         });
       }
-      // 2: validate email
-      const emailExist = await User.findOne({ email });
-      if (emailExist) {
-        return res.status(400).json({ message: "Email đã được đăng ký" });
+
+      const { username, email, password } = req.body;
+      const checkEmail = await User.findOne({ email });
+      if (checkEmail) {
+        return res.status(400).json("Email da dc dang ky");
       }
-      // 3 ma hoa password
       const hashPassword = await bcryptjs.hash(password, 10);
-      // update
       const user = await User.create({
-        email,
         username,
+        email,
         password: hashPassword,
       });
-      // 4
       res.status(200).json({
-        message: "Create Done",
+        message: "Create user done",
         data: { ...user.toObject(), password: undefined },
       });
     } catch (error) {
-      res.status(400).json({
-        message: error.message,
-      });
+      res.status(400).json({ message: error.message });
     }
   }
-
   async login(req, res) {
-    const { email, password } = req.body;
-    const { error } = loginValidator.validate(req.body);
-    if (error) {
-      const errors = error.details.map((err) => err.message);
-      return res.status(400).json({
-        message: errors,
+    try {
+      const { error } = loginValidator.validate(req.body, {
+        abortEarly: false,
       });
-    }
-    const checkUser = await User.findOne({ email });
-    if (!checkUser) {
-      return res.status(404).json({
-        message: "Tai khoan ko hop he",
+      if (error) {
+        const errors = error.details.map((err) => err.message);
+        return res.status(400).json({
+          message: errors,
+        });
+      }
+
+      const { email, password } = req.body;
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(400).json("Tai khoan khong hop le");
+      }
+
+      const checkPassword = await bcryptjs.compare(password, user.password);
+      if (!checkPassword) {
+        return res.status(400).json("Mat khau khong hop le");
+      }
+
+      const token = jwt.sign({ id: user._id }, "key", { expiresIn: "1d" });
+      res.status(200).json({
+        message: "Dang nhap thanh cong",
+        data: { ...user.toObject(), password: undefined, token },
       });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
     }
-    const checkPassword = await bcryptjs.compare(password, checkUser.password);
-    if (!checkPassword) {
-      return res.status(404).json({
-        message: "Tài khoảng không hợp lệ",
-      });
-    }
-    const token = jwt.sign({ id: checkUser._id }, "khoa-bi-mat", {
-      expiresIn: "1d",
-    });
-    res.status(200).json({
-      message: "Login thành công",
-      user: { ...checkUser.toObject(), password: undefined },
-      token,
-    });
   }
 }
+
 export default AuthController;
